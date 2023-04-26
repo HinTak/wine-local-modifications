@@ -1,0 +1,11 @@
+--- ./libs/wine/loader.c.orig	2020-06-05 20:15:16.000000000 +0100
++++ ./libs/wine/loader.c	2020-07-10 09:57:19.487384273 +0100
+@@ -130,7 +130,7 @@
+     if (dlldir)
+     {
+         dll_path_maxlen = strlen(dlldir);
+-        dll_paths[nb_dll_paths++] = dlldir;
++        /* dll_paths[nb_dll_paths++] = dlldir; */
+     }
+     else if (build_dir)
+     {

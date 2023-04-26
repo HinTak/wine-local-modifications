@@ -1,0 +1,11 @@
+--- ./dlls/windowscodecs/Makefile.in.orig	2022-06-17 20:52:59.000000000 +0100
++++ ./dlls/windowscodecs/Makefile.in	2022-06-28 00:39:56.660607649 +0100
+@@ -1,7 +1,7 @@
+ MODULE    = windowscodecs.dll
+ IMPORTLIB = windowscodecs
+ IMPORTS   = $(TIFF_PE_LIBS) $(JPEG_PE_LIBS) $(PNG_PE_LIBS) windowscodecs uuid ole32 oleaut32 propsys rpcrt4 shlwapi user32 gdi32 advapi32
+-EXTRAINCL = $(TIFF_PE_CFLAGS) $(JPEG_PE_CFLAGS) $(PNG_PE_CFLAGS)
++EXTRAINCL =
+ 
+ C_SRCS = \
+ 	bitmap.c \

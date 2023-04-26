@@ -1,0 +1,28 @@
+From 7d54eb98bf7989113608297e3badf4e7dd905f43 Mon Sep 17 00:00:00 2001
+From: Huw Davies <huw@codeweavers.com>
+Date: Wed, 26 Mar 2008 15:35:32 +0000
+Subject: gdi32: Hack to skip loading of ukai.ttf which causes native gdiplus to crash.
+To: wine-patches <wine-patches@winehq.org>
+
+---
+ dlls/win32u/freetype.c |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
+
+diff --git a/dlls/gdi32/freetype.c b/dlls/gdi32/freetype.c
+index 04db3ae..b3c5b7a 100644
+--- a/dlls/win32u/freetype.c	2022-02-11 20:32:05.000000000 +0000
++++ b/dlls/win32u/freetype.c	2022-02-20 23:48:21.343682055 +0000
+@@ -1330,6 +1330,13 @@
+         return 0;
+     }
+ 
++    if(!strcmp(unix_face->family_name, "AR PL ZenKai Uni")) /* This font (ukai.ttf) causes native gdiplus to crash */
++    {
++        TRACE("Skipping %s\n", unix_face->family_name);
++        unix_face_destroy( unix_face );
++        return 0;
++    }
++
+     if (!HIWORD( flags )) flags |= ADDFONT_AA_FLAGS( default_aa_flags );
+ 
+     ret = add_gdi_face( unix_face->family_name, unix_face->second_name, unix_face->style_name, unix_face->full_name,
