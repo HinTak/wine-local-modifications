@@ -1,0 +1,87 @@
+--- wine.spec.orig	2023-04-19 22:52:06.000000000 +0100
++++ wine.spec	2023-04-26 22:48:20.925429104 +0100
+@@ -65,6 +65,7 @@
+ Source107:      wine-wineboot.desktop
+ Source108:      wine-wordpad.desktop
+ Source109:      wine-oleview.desktop
++Epoch: 100
+ 
+ # AppData files
+ Source150:      wine.appdata.xml
+@@ -78,6 +79,11 @@
+ # mime types
+ Source300:      wine-mime-msi.desktop
+ 
++Patch1001: wine-libjpeg-mingw.diff
++Patch1002: wine-libtiff.diff
++Patch1003: loader-override.diff.5.10
++Patch1015: attachment_11667
++Patch1040: wine-msi-genomestudio.patch.3.8-8.6
+ 
+ # smooth tahoma (#693180)
+ # disable embedded bitmaps
+@@ -228,7 +234,6 @@
+ %endif
+ %if 0%{?fedora} >= 33
+ Recommends:     wine-dxvk(x86-32)
+-Recommends:     dosbox-staging
+ %endif
+ Recommends:     gstreamer1-plugins-good(x86-32)
+ %endif
+@@ -250,7 +255,6 @@
+ Requires:       mesa-dri-drivers(x86-64)
+ %if 0%{?fedora} >= 33
+ Recommends:     wine-dxvk(x86-64)
+-Recommends:     dosbox-staging
+ %endif
+ Recommends:     gstreamer1-plugins-good(x86-64)
+ %endif
+@@ -684,6 +688,12 @@
+ %patch -P 100 -p1 -b.autoconf
+ %patch -P 511 -p1 -b.cjk
+ 
++%patch1001 -p1
++%patch1002 -p1
++#%patch1003 -p1
++%patch1015 -p1
++%patch1040 -p1
++
+ %if 0%{?wine_staging}
+ # setup and apply wine-staging patches
+ gzip -dc %{SOURCE900} | tar -xf - --strip-components=1
+@@ -763,6 +773,9 @@
+ %{?wine_staging: --with-xattr} \
+  --disable-tests
+ 
++ulimit -s unlimited
++export CCACHE_DISABLE=1
++
+ %make_build TARGETFLAGS=""
+ 
+ %install
+@@ -815,6 +828,7 @@
+ chrpath --delete %{buildroot}%{_bindir}/wine32
+ chrpath --delete %{buildroot}%{_bindir}/wineserver32
+ %endif
++export LDFLAGS=$CFLAGS
+ 
+ mkdir -p %{buildroot}%{_sysconfdir}/wine
+ 
+@@ -1225,6 +1239,8 @@
+ %{_libdir}/wine/%{winepedir}/browseui.dll
+ %{_libdir}/wine/%{winepedir}/bthprops.cpl
+ %{_libdir}/wine/%{winepedir}/cabinet.dll
++%{_libdir}/wine/%{winesodir}/capi2032.so
++%{_libdir}/wine/%{winepedir}/capi2032.dll
+ %{_libdir}/wine/%{winepedir}/cards.dll
+ %{_libdir}/wine/%{winepedir}/cdosys.dll
+ %{_libdir}/wine/%{winepedir}/cfgmgr32.dll
+@@ -1704,6 +1720,8 @@
+ %{_libdir}/wine/%{winepedir}/winebus.sys
+ %{_libdir}/wine/%{winesodir}/winegstreamer.so
+ %{_libdir}/wine/%{winepedir}/winegstreamer.dll
++%{_libdir}/wine/%{winesodir}/winscard.so
++%{_libdir}/wine/%{winepedir}/winscard.dll
+ %{_libdir}/wine/%{winepedir}/winehid.sys
+ %{_libdir}/wine/%{winepedir}/winemapi.dll
+ %{_libdir}/wine/%{winepedir}/wineusb.sys
